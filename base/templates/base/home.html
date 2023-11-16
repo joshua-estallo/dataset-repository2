@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <style>
+     * {
+      box-sizing: border-box;
+      margin: 0px;
+      padding: 0px;
+    }
+    body {
+      background-color: #333;
+      color: white;
+    }
+    header {
+      background-color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    header nav {
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 5px;
+      padding: 20px 0px;
+    }
+    main {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 40px
+    }
+    main .content {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      width: 90%;
+    }
+
+    main .inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0px;
+      margin-bottom: 20px;
+    }
+    .upload-button {
+      background-color: #000;
+      color: blue;
+      border: 1px solid #fff;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    li {
+      list-style-type: none;
+    }
+    a {
+      color: yellowgreen;
+    }
+    h2 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      gap: 10px;
+      border-radius: 5px;
+      align-items: center;
+    }
+    .container a {
+      width: 20%;
+    }
+    .container p {
+      width: 80%;
+    }
+    .logo {
+      color: white;
+    }
+    p {
+      line-height: 1.5;
+      font-size: 1em;
+    }
+    a {
+      text-decoration: none;
+    }
+    .hover:hover {
+      color: yellow;
+    }
+    input {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/"><div class="logo">DATASET REPOSITORY</div></a>
+      <div class="search">
+        <form action="{% url 'home' %}" method="GET">
+          <input type="text" name="q" placeholder="Search..." autocomplete="off">
+        </form>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="content">
+      <div class="inner">
+        <h2>Browse Datasets</h2>
+        <button class="upload-button"><a href="upload/" class="hover">Upload Dataset</a></button>
+      </div>
+      <div class="outer">
+
+        {% for dataset in page %}
+            <!-- Display individual dataset information here -->
+            <div class="container">
+              <a href="/dataset/{{ dataset.id }}" class="hover"><li>{{ dataset.id }} {{ dataset.title }} </li></a>
+              <p>{{ dataset.overview }} </p>
+            </div>
+        {% endfor %}
+
+        <div class="pagination">
+          <span class="step-links">
+              {% if page.has_previous %}
+                  <a href="?q={{ q }}&page=1">&laquo; first</a>
+                  <a href="?q={{ q }}&page={{ page.previous_page_number }}">previous</a>
+              {% endif %}
+              
+              <span class="current-page">Page {{ page.number }} of {{ page.paginator.num_pages }}.</span>
+              
+              {% if page.has_next %}
+                  <a href="?q={{ q }}&page={{ page.next_page_number }}">next</a>
+                  <a href="?q={{ q }}&page={{ page.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
+          </span>
+      </div>
+      
+
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

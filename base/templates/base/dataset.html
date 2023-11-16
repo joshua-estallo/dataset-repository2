@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataset page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0px;
+      padding: 0px;
+    }
+    body {
+      background-color: #000;
+      color: white;
+    }
+    header {
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+    }
+    header nav {
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 5px;
+      padding: 20px;
+    }
+    span {
+      color: yellow;
+    }
+
+    a {
+      color: white;
+    }
+
+    main {
+      margin-bottom: 50px;
+      background-color: #444;
+      display: flex;
+      
+    }
+    main .content {
+      width: 90%;
+      display: flex;
+      /* text-align: center; */
+      justify-content: space-between;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .big {
+      width: 70%;
+      margin-right: 10px;
+      border-right: 1px solid black;
+    }
+    .small {
+      width: 30%;
+      text-align: right;
+    }
+    li {
+      list-style-type: none;
+    }
+    .similar {
+      display: flex;
+      justify-content: center;
+    }
+    .similar .content {
+      width: 90%;
+      display: flex;
+      /* justify-content: center;
+      align-items: center; */
+      text-align: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .download {
+      background-color: green;
+      padding: 10px;
+      border-radius: 7px;
+    }
+    .download-button {
+      background-color: #000;
+      color: blue;
+      border: 1px solid #fff;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: right;
+    }
+    a {
+      text-decoration: none;
+      color: yellowgreen;
+    }
+    button a:hover {
+      color: yellow;
+    }
+    h1 {
+      margin-bottom: 20px;
+      border-bottom: 2px solid white;
+      padding-bottom: 10px;
+    }
+    h3 {
+      margin-bottom: 10px;
+    }
+    h3:hover {
+      color: yellow;
+    }
+    p {
+      margin: 10px 0px;
+      
+    }
+    footer {
+      height: 50px;
+      background-color: #444;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      color: white;
+      text-align: center;
+    }
+    .logo {
+      /* background-color: #777; */
+      color: white;
+    }
+    h2 {
+      color: yellow;
+    }
+    input {
+      padding: 10px;
+    }
+    ul {
+      display:flex;
+      justify-content: center;
+    }
+    .value {
+      font-size: 20px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .popup {
+      width: 400px;
+      background-color: #ddd;
+      color: #000;
+      border-radius: 6px;
+      border: 1px solid black;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      visibility: hidden;
+
+    }
+    .open-popup {
+      top: 50%;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+
+    }
+    
+  </style>
+<body>
+  <header>
+    <nav>
+      <a href="/"><div class="logo">DATASET REPOSITORY</div></a>
+      <div class="search">
+        <form action="{% url 'home' %}" method="GET" autocomplete="off">
+          <input type="text" name="q" placeholder="Search...">
+        </form>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <div class="content">
+      <div class="big">
+        {% if dataset.category.all %}
+        <h2>Categories: </h4>
+        <p class="value">
+          {% for category in dataset.category.all %}
+            {{ category }} ,
+          {% endfor %}
+        </p>
+        {% endif %}
+        {% if dataset.title %}
+        <h2>Title: </h4>
+        <p class="value">{{ dataset.title }}</p>
+        {% endif %}
+        {% if dataset.author %}
+        <h2>Author: </h4>
+        <p class="value">{{ dataset.author }}</p>
+        {% endif %}
+        {% if dataset.description %}
+        <h2>Description: </h4>
+        <p class="value">{{ dataset.description }}</p>
+        {% endif %}
+        {% if dataset.research_title %}
+        <h2>Research Title: </h4>
+        <p class="value">{{ dataset.research_title }}</p>
+        {% endif %}
+        {% if dataset.tags %}
+        <h2>Tags/Keywords: </h4>
+        <p class="value">{{ dataset.tags }}</p>
+        {% endif %}
+        {% if dataset.format %}
+        <h2>Dataset File Format: </h4>
+        <p class="value">{{ dataset.format }}</p>
+      {% endif %}
+      </div>
+      <div class="small">
+        <div class="buttons">
+          {% if dataset.file %}
+            <button class="download-button"><a href="{% url 'download' dataset.id %}">Download dataset</a></button>
+          {% else %}
+            <button class="download-button"><a href="">No file uploaded</a></button>
+          {% endif %}
+          <br><br>
+          <button class="popup-button" type="submit" onclick="togglePopup()">Cite</button>
+          <div class="popup-container">
+            <div class="popup" id="popup">
+              <!-- <div class="">Citation</div> -->
+              <button onclick="copyContent()">Copy citation</button>
+              <div class="citeText" id="citeText" >{{ dataset.author }} (dataset.year). {{dataset.title}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="recs">
+          <div class="similar">
+            <div class="content">
+              <h1 class="similar-text">Recommended Datasets</h1>
+              <ul>
+                <div>
+                  {% for similar_dataset in similar_datasets %}
+                  <a href="/dataset/{{ similar_dataset.id }}">
+                    <h3>{{ similar_dataset.title }}</h3>
+                  </a>
+                  {% endfor %}
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+
+  <script>
+    document.addEventListener("click", function (event) {
+      let popup = document.getElementById("popup");
+
+      // Check if the clicked element is not the popup or its button
+      if (!popup.contains(event.target) && event.target.className !== "popup-button") {
+        popup.classList.remove("open-popup");
+      }
+    });
+
+    function togglePopup() {
+      popup.classList.toggle("open-popup");
+    }
+
+    let text = document.getElementById('citeText').innerHTML;
+    const copyContent = async () => {
+      try {
+        await navigator.clipboard.writeText(text);
+        console.log('Content copied to clipboard');
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    }
+
+  </script>
+</body>
+
+</html>
